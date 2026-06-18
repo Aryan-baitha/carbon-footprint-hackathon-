@@ -1,5 +1,7 @@
 # 🪔 Eco-Ledger: Event-Sourced Carbon Budgeter (Swadeshi Khata)
 
+**Live Demo / Deployment Link:** [https://eco-ledger-weojdkptyq-ew.a.run.app](https://eco-ledger-weojdkptyq-ew.a.run.app)
+
 **Author:** Aryan Baitha (B.Tech CSE, Asansol Engineering College, Batch 2024-2028)
 
 Eco-Ledger (Swadeshi Khata) is a **production-ready, secure, and accessible** web application that helps users track and manage their carbon footprint through an **event-sourcing architecture** and optimize energy usage via a **Best-Fit Decreasing greedy scheduling algorithm**.
