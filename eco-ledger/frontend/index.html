@@ -3,154 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eco-Ledger: Carbon Budgeter</title>
-    <!-- Tailwind CSS via CDN -->
+    <title>Swadeshi Khata | Indian Edition 🇮🇳</title>
+    <meta name="description" content="Swadeshi Khata: An event-sourced carbon footprint tracker and smart appliance scheduler to reduce emissions.">
+    <meta name="keywords" content="carbon footprint, eco tracker, sustainability, India, green energy, event sourcing">
+    <meta name="author" content="Aryan Baitha">
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
                     colors: {
-                        brand: {
-                            dark: '#0f172a',
-                            light: '#f8fafc',
-                            accent: '#16a34a',
-                            danger: '#dc2626'
+                        india: { saffron: '#FF9933', green: '#138808', blue: '#000080', dark: '#0a0b10', surface: '#161821' }
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'fade-in-up': 'fadeInUp 0.3s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'counter': 'counter 1.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
             }
         }
     </script>
+    
     <style>
-        /* High contrast utilities and basic animations */
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0b10;
+            color: #F8FAFC;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, rgba(255, 153, 51, 0.05) 0%, transparent 50%),
+                              radial-gradient(circle at 50% 100%, rgba(19, 136, 8, 0.05) 0%, transparent 50%);
         }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+        
+        .glass-card {
+            background: rgba(22, 24, 33, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.6);
+        }
+        
+        .text-gradient-india {
+            background: linear-gradient(135deg, #FF9933 0%, #138808 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        .input-premium {
+            background: rgba(10, 11, 16, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
         }
-        .btn-hover {
-            transition: transform 0.2s, filter 0.2s;
+        .input-premium:focus {
+            border-color: #FF9933;
+            box-shadow: 0 0 0 2px rgba(255, 153, 51, 0.2);
+            outline: none;
         }
-        .btn-hover:hover {
-            transform: scale(1.02);
-            filter: brightness(1.2);
+
+        .btn-primary-india {
+            background: linear-gradient(135deg, #FF9933 0%, #e67e22 100%);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
         }
-        /* Custom scrollbar for better UI */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .btn-primary-india::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.5s ease;
         }
-        ::-webkit-scrollbar-track {
-            background: #0f172a; 
+        .btn-primary-india:hover::after { left: 150%; }
+        .btn-primary-india:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(255, 153, 51, 0.3); }
+
+        .btn-green-india {
+            background: linear-gradient(135deg, #138808 0%, #0e6b06 100%);
+            transition: all 0.3s ease;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #334155; 
-            border-radius: 4px;
+        .btn-green-india:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(19, 136, 8, 0.3); }
+
+        .highlight-element {
+            position: relative;
+            z-index: 150 !important;
+            box-shadow: 0 0 0 4px rgba(255, 153, 51, 0.6), 0 0 40px rgba(255, 153, 51, 0.4) !important;
+            border-color: #FF9933 !important;
+            background: rgba(22, 24, 33, 0.95) !important;
+            transition: all 0.3s ease;
+            border-radius: 1.5rem;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569; 
+
+        /* Hide scrollbar for chips */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out;
+            animation-fill-mode: both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Stats card shimmer */
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+
+        /* History table */
+        .history-row {
+            transition: background-color 0.2s ease;
+        }
+        .history-row:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Chart containers */
+        .chart-container {
+            position: relative;
+            height: 260px;
+        }
+
+        /* Skip nav (accessibility) */
+        .skip-nav {
+            position: absolute;
+            top: -100%;
+            left: 0;
+            padding: 1rem 2rem;
+            background: #FF9933;
+            color: white;
+            z-index: 999;
+            transition: top 0.3s ease;
+        }
+        .skip-nav:focus {
+            top: 0;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-10 px-4">
+<body class="min-h-screen relative font-sans selection:bg-india-saffron selection:text-white pb-12">
 
-    <!-- Header Section (Semantic HTML5) -->
-    <header class="w-full max-w-4xl mb-8 text-center" aria-label="Main Application Header">
-        <h1 class="text-4xl md:text-5xl font-bold text-brand-accent mb-2">Eco-Ledger</h1>
-        <p class="text-xl text-gray-300">Event-Sourced Carbon Budgeter</p>
-    </header>
+    <!-- Skip Navigation Link (Accessibility) -->
+    <a href="#main-content" class="skip-nav" id="skip-nav">Skip to main content</a>
 
-    <!-- Main Dashboard Area -->
-    <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8" aria-label="Dashboard Content">
+    <!-- Noscript fallback -->
+    <noscript>
+        <div style="background:#FF9933;color:white;padding:1rem;text-align:center;font-family:sans-serif;">
+            ⚠️ JavaScript is required to run Swadeshi Khata. Please enable JavaScript in your browser settings.
+        </div>
+    </noscript>
+
+    <!-- Background Animated Blobs -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-india-saffron rounded-full mix-blend-screen filter blur-[150px] opacity-15 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-india-blue rounded-full mix-blend-screen filter blur-[150px] opacity-15 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-[600px] h-[600px] bg-india-green rounded-full mix-blend-screen filter blur-[150px] opacity-15 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="w-full border-b border-white/5 bg-india-surface/50 backdrop-blur-md sticky top-0 z-50" role="navigation" aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-india-saffron to-india-green flex items-center justify-center shadow-lg shadow-india-saffron/20">
+                    <span class="text-xl" aria-hidden="true">🪔</span>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight">Swadeshi<span class="text-gradient-india">Khata</span></h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="user-greeting" class="text-sm font-medium text-slate-300 hidden md:block" aria-live="polite"></div>
+                <div class="text-sm font-medium text-slate-400 bg-white/5 px-4 py-2 rounded-full border border-white/5 flex items-center gap-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-india-green animate-pulse" aria-hidden="true"></span> Jai Hind 🇮🇳
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-7xl mx-auto px-6 mt-12 relative z-10" role="main">
         
-        <!-- Section: Carbon Budget Overview -->
-        <section class="glass-panel p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center" aria-labelledby="budget-title">
-            <h2 id="budget-title" class="text-2xl font-semibold mb-4 text-gray-100">Total Carbon Budget</h2>
-            <div class="text-5xl font-bold text-white mb-2" id="carbon-budget-display" aria-live="polite">
-                0.0
+        <!-- Top Row: Budget + Activity Logger + Scheduler -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in-up">
+            
+            <!-- Left Column -->
+            <div class="lg:col-span-5 flex flex-col gap-8">
+                <section id="tour-budget" class="glass-card rounded-3xl p-8 relative overflow-hidden group transition-all" role="region" aria-label="Carbon Budget Display">
+                    <h2 class="text-lg font-medium text-slate-400 mb-2 relative z-10 flex justify-between items-center">
+                        Net Carbon Footprint <span class="text-2xl" aria-hidden="true">🌍</span>
+                    </h2>
+                    <div class="flex items-baseline gap-2 relative z-10">
+                        <span class="text-6xl font-extrabold tracking-tighter" id="carbon-budget-display" aria-live="polite" aria-atomic="true">0.0</span>
+                        <span class="text-xl text-slate-400 font-medium">kg CO₂e</span>
+                    </div>
+                    
+                    <div class="mt-8 flex items-center justify-between relative z-10">
+                        <div class="flex items-center gap-2">
+                            <div class="w-10 h-10 rounded-full bg-india-green/10 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-india-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path></svg>
+                            </div>
+                            <p class="text-sm text-slate-300">Live from Event-Sourcing</p>
+                        </div>
+                        <button id="refresh-budget-btn" class="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all border border-white/10 text-white shadow-lg" aria-label="Refresh carbon budget">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        </button>
+                    </div>
+                </section>
+
+                <section id="tour-log-section" class="glass-card rounded-3xl p-8 transition-all" role="region" aria-label="Activity Logger">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <span aria-hidden="true">✍️</span> Naya Activity Jodein
+                    </h2>
+                    <form id="event-form" class="space-y-5">
+                        <div>
+                            <label for="action_type" class="block text-sm font-medium text-slate-400 mb-2">Kya kiya aapne?</label>
+                            <input type="text" id="action_type" required class="input-premium w-full rounded-xl px-4 py-3 text-white placeholder-slate-500" placeholder="e.g. Car travel, Ya ped lagaya 🌳" aria-required="true" autocomplete="off">
+                            <!-- Quick-pick activity chips -->
+                            <div class="flex flex-wrap gap-2 mt-3" id="activity-chips" role="group" aria-label="Quick pick activities">
+                                <button type="button" class="activity-chip bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-400 px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105" data-activity="Car travel" data-impact="2.3">🚗 Car</button>
+                                <button type="button" class="activity-chip bg-yellow-500/10 border border-yellow-500/20 hover:bg-yellow-500/20 text-yellow-400 px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105" data-activity="Auto Rickshaw ride" data-impact="0.5">🛺 Auto</button>
+                                <button type="button" class="activity-chip bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105" data-activity="Bus commute" data-impact="0.9">🚌 Bus</button>
+                                <button type="button" class="activity-chip bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 text-orange-400 px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105" data-activity="Bike/Motorcycle ride" data-impact="1.0">🏍️ Bike</button>
+                                <button type="button" class="activity-chip bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105" data-activity="AC used 1 hour" data-impact="1.2">❄️ AC</button>
+                                <button type="button" class="activity-chip bg-india-green/10 border border-india-green/20 hover:bg-india-green/20 text-india-green px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105" data-activity="Planted a tree" data-impact="-22.0">🌳 Ped lagaya</button>
+                                <button type="button" class="activity-chip bg-india-green/10 border border-india-green/20 hover:bg-india-green/20 text-india-green px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105" data-activity="Used bicycle" data-impact="-0.5">🚲 Cycle</button>
+                                <button type="button" class="activity-chip bg-teal-500/10 border border-teal-500/20 hover:bg-teal-500/20 text-teal-400 px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105" data-activity="Train journey" data-impact="0.4">🚆 Train</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="carbon_impact" class="block text-sm font-medium text-slate-400 mb-2">Carbon Asar <span class="text-xs text-slate-500">(kg CO₂e)</span></label>
+                            <div class="relative">
+                                <input type="number" step="0.1" id="carbon_impact" required class="input-premium w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500" placeholder="Auto-calculated ya khud dalein" aria-required="true">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="text-lg opacity-60" aria-hidden="true">⚖️</span></div>
+                            </div>
+                            <!-- Auto-estimate indicator -->
+                            <div id="auto-estimate-badge" class="hidden mt-2 flex items-center gap-2 animate-fade-in-up">
+                                <span class="inline-flex items-center gap-1.5 bg-india-saffron/15 border border-india-saffron/30 text-india-saffron text-xs font-medium px-3 py-1.5 rounded-full">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    <span id="auto-estimate-text">🤖 Auto-estimated from Indian emission factors</span>
+                                </span>
+                            </div>
+                        </div>
+                        <button type="submit" id="submit-event-btn" class="btn-primary-india w-full text-white font-bold py-3.5 rounded-xl shadow-lg mt-2 flex justify-center items-center gap-2" aria-label="Submit activity to ledger">
+                            Ledger mein Darj Karein 📝
+                        </button>
+                        <div id="event-feedback" class="text-sm text-center py-2 rounded-lg hidden transition-all" role="alert" aria-live="assertive"></div>
+                    </form>
+                </section>
             </div>
-            <p class="text-gray-400">kg CO2e</p>
-            <button id="refresh-budget-btn" class="mt-6 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg btn-hover focus:outline-none focus:ring-2 focus:ring-brand-accent" aria-label="Refresh Carbon Budget">
-                Refresh Budget
-            </button>
+
+            <!-- Right Column (Scheduler) -->
+            <div class="lg:col-span-7 flex flex-col gap-8">
+                <section id="tour-scheduler" class="glass-card rounded-3xl p-8 h-full flex flex-col transition-all" role="region" aria-label="Smart Task Scheduler">
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2">
+                                <span aria-hidden="true">⚡</span> Smart Task Scheduler
+                            </h2>
+                            <p class="text-slate-400 text-sm">Bijli ki bachat aur carbon reduction! Humara <strong>Best-Fit Decreasing Greedy Algorithm</strong> batayega ki heavy appliances kab chalana sabse optimal hai.</p>
+                        </div>
+                        <div class="hidden sm:block p-3 bg-india-saffron/10 rounded-2xl border border-india-saffron/20" aria-hidden="true">
+                            <span class="text-3xl">🎛️</span>
+                        </div>
+                    </div>
+                    
+                    <div id="tour-task-inputs" class="bg-black/30 border border-white/5 rounded-2xl p-6 mb-6 transition-all">
+                        <h3 class="text-sm font-semibold text-india-saffron mb-4 uppercase tracking-wider">Appliance Queue Mein Daalein</h3>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <div class="flex-1 relative">
+                                <label for="task-name" class="sr-only">Appliance Name</label>
+                                <input type="text" id="task-name" placeholder="Appliance (e.g. Washing Machine)" class="input-premium w-full rounded-xl px-4 py-3 text-white text-sm" aria-label="Appliance name">
+                            </div>
+                            <div class="w-full sm:w-32 relative">
+                                <label for="task-duration" class="sr-only">Duration in Hours</label>
+                                <input type="number" step="0.5" id="task-duration" placeholder="Ghante (Hrs)" class="input-premium w-full rounded-xl px-4 py-3 text-white text-sm" aria-label="Duration in hours">
+                            </div>
+                            <button id="add-task-btn" class="btn-primary-india text-white font-medium py-3 px-6 rounded-xl transition-colors shadow-lg whitespace-nowrap" aria-label="Add task to queue">
+                                Queue Task ➕
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">Pending Tasks</h3>
+                            <span class="text-xs bg-india-blue/50 text-white px-2 py-1 rounded-md border border-india-blue" id="task-count" aria-live="polite">0 tasks</span>
+                        </div>
+                        <div class="bg-black/30 border border-white/5 rounded-2xl p-1 min-h-[120px] mb-6 overflow-hidden">
+                            <ul id="task-list" class="space-y-1 p-2 max-h-[150px] overflow-y-auto" role="list" aria-label="Task queue">
+                                <li class="text-slate-500 text-sm text-center py-4" id="empty-state">Abhi tak koi task nahi joda gaya.</li>
+                            </ul>
+                        </div>
+                        <button id="run-scheduler-btn" class="w-full btn-green-india text-white font-bold py-4 rounded-xl shadow-lg transition-all hover:scale-[1.01] flex justify-center items-center gap-2 mt-auto" aria-label="Run greedy scheduler optimizer">
+                            <span class="text-xl" aria-hidden="true">🚀</span> Optimize Schedule Now
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+
+        <!-- Analytics Dashboard Section -->
+        <section class="mt-12 animate-fade-in-up" role="region" aria-label="Analytics Dashboard">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-india-blue to-india-green flex items-center justify-center shadow-lg">
+                    <span class="text-xl" aria-hidden="true">📊</span>
+                </div>
+                <h2 class="text-2xl font-bold">Analytics Dashboard</h2>
+                <div class="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent ml-4"></div>
+            </div>
+
+            <!-- Stats Cards Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+                <div class="stat-card glass-card rounded-2xl p-6 border-t-2 border-red-500/50">
+                    <p class="text-sm font-medium text-slate-400 mb-1 flex items-center gap-2"><span aria-hidden="true">🔴</span> Total Emissions</p>
+                    <p class="text-3xl font-extrabold text-red-400" id="stat-emissions" aria-live="polite">0.0</p>
+                    <p class="text-xs text-slate-500 mt-1">kg CO₂e emitted</p>
+                </div>
+                <div class="stat-card glass-card rounded-2xl p-6 border-t-2 border-india-green/50">
+                    <p class="text-sm font-medium text-slate-400 mb-1 flex items-center gap-2"><span aria-hidden="true">🟢</span> Total Reductions</p>
+                    <p class="text-3xl font-extrabold text-india-green" id="stat-reductions" aria-live="polite">0.0</p>
+                    <p class="text-xs text-slate-500 mt-1">kg CO₂e saved</p>
+                </div>
+                <div class="stat-card glass-card rounded-2xl p-6 border-t-2 border-india-saffron/50">
+                    <p class="text-sm font-medium text-slate-400 mb-1 flex items-center gap-2"><span aria-hidden="true">📈</span> Total Events</p>
+                    <p class="text-3xl font-extrabold text-india-saffron" id="stat-event-count" aria-live="polite">0</p>
+                    <p class="text-xs text-slate-500 mt-1">activities logged</p>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span aria-hidden="true">🍩</span> Emissions vs Reductions</h3>
+                    <div class="chart-container">
+                        <canvas id="doughnut-chart" aria-label="Doughnut chart showing emissions versus reductions breakdown"></canvas>
+                    </div>
+                    <p id="chart-empty-doughnut" class="text-slate-500 text-sm text-center py-8 hidden">Koi data nahi hai. Pehle activity log karein!</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span aria-hidden="true">📈</span> Cumulative Carbon Over Time</h3>
+                    <div class="chart-container">
+                        <canvas id="line-chart" aria-label="Line chart showing cumulative carbon footprint over time"></canvas>
+                    </div>
+                    <p id="chart-empty-line" class="text-slate-500 text-sm text-center py-8 hidden">Koi data nahi hai. Pehle activity log karein!</p>
+                </div>
+            </div>
         </section>
 
-        <!-- Section: Add Carbon Event -->
-        <section class="glass-panel p-6 rounded-2xl shadow-xl" aria-labelledby="add-event-title">
-            <h2 id="add-event-title" class="text-2xl font-semibold mb-6 text-gray-100">Log Activity</h2>
-            
-            <form id="event-form" class="flex flex-col gap-4" aria-label="Log Carbon Event Form">
-                <div>
-                    <label for="action_type" class="block text-sm font-medium text-gray-300 mb-1">Action Type</label>
-                    <input type="text" id="action_type" name="action_type" required 
-                           class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-accent" 
-                           placeholder="e.g., Drove to work"
-                           aria-label="Action Type Input" aria-required="true">
+        <!-- Event History (Audit Trail) Section -->
+        <section class="mt-12 mb-16 animate-fade-in-up" role="region" aria-label="Event History Audit Trail">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-india-saffron to-india-blue flex items-center justify-center shadow-lg">
+                    <span class="text-xl" aria-hidden="true">📜</span>
                 </div>
-                
-                <div>
-                    <label for="carbon_impact" class="block text-sm font-medium text-gray-300 mb-1">Carbon Impact (kg CO2e)</label>
-                    <input type="number" step="0.1" id="carbon_impact" name="carbon_impact" required 
-                           class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-accent" 
-                           placeholder="e.g., 5.5 (Use negative for reductions)"
-                           aria-label="Carbon Impact Numeric Input" aria-required="true">
-                </div>
-                
-                <button type="submit" id="submit-event-btn" 
-                        class="mt-2 w-full bg-brand-accent hover:bg-green-500 text-white font-bold py-3 rounded-lg btn-hover shadow-lg focus:outline-none focus:ring-2 focus:ring-white"
-                        aria-label="Submit Carbon Event">
-                    Log Event
+                <h2 class="text-2xl font-bold">Immutable Event Ledger</h2>
+                <div class="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent ml-4"></div>
+                <button id="refresh-history-btn" class="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/5 text-slate-300 text-sm flex items-center gap-2" aria-label="Refresh event history">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Refresh
                 </button>
-                <div id="event-feedback" class="text-sm mt-2 text-center hidden" aria-live="polite"></div>
-            </form>
-        </section>
+            </div>
 
-        <!-- Section: Algorithmic Task Scheduler -->
-        <section class="glass-panel p-6 rounded-2xl shadow-xl md:col-span-2" aria-labelledby="scheduler-title">
-            <h2 id="scheduler-title" class="text-2xl font-semibold mb-4 text-gray-100">Smart Task Scheduler (Greedy Algorithm)</h2>
-            <p class="text-gray-400 mb-6">Enter heavy tasks to find optimal off-peak grid hours.</p>
-            
-            <div class="flex flex-col md:flex-row gap-4 mb-6">
-                <input type="text" id="task-name" placeholder="Task Name (e.g. Washing Machine)" 
-                       class="flex-1 bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                       aria-label="Task Name">
-                <input type="number" step="0.5" id="task-duration" placeholder="Duration (hrs)" 
-                       class="w-full md:w-32 bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                       aria-label="Task Duration in hours">
-                <button id="add-task-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-lg btn-hover focus:outline-none focus:ring-2 focus:ring-white" aria-label="Add Task to List">
-                    Add Task
-                </button>
-            </div>
-            
-            <div class="mb-4">
-                <h3 class="text-lg font-medium text-gray-300 mb-2">Tasks to Schedule:</h3>
-                <ul id="task-list" class="list-disc list-inside text-gray-400" aria-live="polite">
-                    <!-- Tasks injected here -->
-                </ul>
-            </div>
-            
-            <button id="run-scheduler-btn" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg btn-hover focus:outline-none focus:ring-2 focus:ring-white" aria-label="Run Scheduler Algorithm">
-                Find Optimal Schedule
-            </button>
-            
-            <div id="schedule-results" class="mt-6 hidden bg-slate-800 p-4 rounded-lg border border-slate-600" aria-live="polite">
-                <h3 class="text-lg font-medium text-brand-accent mb-2">Scheduler Results</h3>
-                <div id="scheduled-items" class="text-gray-300 mb-2"></div>
-                <div id="unscheduled-items" class="text-brand-danger"></div>
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm" role="table" aria-label="Carbon event log table">
+                        <thead>
+                            <tr class="text-left text-slate-400 border-b border-white/5">
+                                <th class="px-6 py-4 font-semibold text-xs uppercase tracking-wider">#</th>
+                                <th class="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Activity</th>
+                                <th class="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Impact (kg CO₂e)</th>
+                                <th class="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Running Total</th>
+                                <th class="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-500" id="history-empty-state">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <span class="text-4xl" aria-hidden="true">📭</span>
+                                        <p>Abhi tak koi event record nahi hua.</p>
+                                        <p class="text-xs text-slate-600">Events log karne ke baad yahan dikhenge.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="mt-12 text-gray-500 text-sm" aria-label="Application Footer">
-        &copy; 2026 Eco-Ledger. Built with Event-Sourcing & Accessibility.
-    </footer>
+    <!-- Expanded Interactive Eco Sahayak -->
+    <div id="tour-helper" class="fixed bottom-6 right-6 z-[100] transition-all flex flex-col items-end">
+        
+        <!-- Helper Expanded Panel -->
+        <div id="helper-panel" class="hidden mb-4 w-[380px] glass-card rounded-2xl overflow-hidden shadow-2xl border border-white/10 transition-all duration-300 origin-bottom-right transform scale-95 opacity-0 flex flex-col" style="height: 500px;">
+            
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-india-saffron to-india-green p-4 text-white flex justify-between items-center shadow-md flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl" aria-hidden="true">👳🏽‍♂️</span>
+                    <div>
+                        <h3 class="font-bold text-lg leading-tight">Eco Sahayak AI</h3>
+                        <p class="text-[11px] text-white/90">Powered by Custom Intent Engine</p>
+                    </div>
+                </div>
+                <button id="close-helper-panel" class="hover:bg-white/20 p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Close Assistant">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Chat Area -->
+            <div class="flex-1 p-4 bg-india-surface/95 overflow-y-auto flex flex-col gap-4" id="helper-chat-area" role="log" aria-label="Chat messages" aria-live="polite">
+                <!-- Initial Welcome -->
+                <div class="flex gap-3">
+                    <span class="text-2xl flex-shrink-0" aria-hidden="true">🌱</span>
+                    <div class="bg-white/5 p-3 rounded-2xl rounded-tl-none border border-white/5 text-slate-200 leading-relaxed text-sm shadow-md">
+                        Namaste! 🙏 Main aapka smart AI assistant hoon. Aap mujhse Swadeshi Khata, Carbon Budget, Charts, History ya Scheduling ke baare mein kuch bhi puch sakte hain.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <div class="bg-black/40 border-t border-white/10 p-3 flex-shrink-0">
+                <!-- Suggestion Chips -->
+                <div class="flex gap-2 overflow-x-auto hide-scroll mb-3 pb-1" id="suggestion-chips">
+                    <button class="helper-chip bg-india-saffron/10 border border-india-saffron/30 hover:bg-india-saffron/20 text-india-saffron px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors" aria-label="Ask how to log activities">How to log?</button>
+                    <button class="helper-chip bg-india-blue/10 border border-india-blue/30 hover:bg-india-blue/20 text-blue-400 px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors" aria-label="Ask about the budget">What is the budget?</button>
+                    <button class="helper-chip bg-india-green/10 border border-india-green/30 hover:bg-india-green/20 text-india-green px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors" aria-label="Get scheduler help">Scheduler help</button>
+                    <button class="helper-chip bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors" aria-label="Get a carbon reduction tip">Give me a tip 💡</button>
+                    <button class="helper-chip bg-india-saffron/10 border border-india-saffron/30 hover:bg-india-saffron/20 text-india-saffron px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors" aria-label="Ask about charts">Tell me about charts</button>
+                </div>
+                
+                <form id="helper-form" class="flex gap-2">
+                    <label for="helper-input" class="sr-only">Ask a question to the AI</label>
+                    <input type="text" id="helper-input" autocomplete="off" placeholder="Puchiye apna sawaal..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-india-saffron focus:ring-2 focus:ring-india-saffron/20 transition-colors" aria-label="Type your question">
+                    <button type="submit" class="bg-gradient-to-r from-india-saffron to-india-green p-2.5 rounded-xl text-white hover:scale-105 transition-transform flex items-center justify-center" aria-label="Send Message">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Toggle FAB Button -->
+        <button id="toggle-helper-btn" aria-label="Toggle AI Helper" class="w-16 h-16 bg-gradient-to-br from-india-saffron via-white to-india-green rounded-full shadow-lg shadow-india-green/30 flex items-center justify-center text-india-blue hover:scale-110 transition-transform focus:outline-none focus:ring-4 focus:ring-india-saffron/50 group relative">
+            <span class="text-3xl group-hover:animate-bounce" aria-hidden="true">🇮🇳</span>
+            <span class="absolute -top-1 -right-1 flex h-4 w-4" aria-hidden="true">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-india-saffron opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-4 w-4 bg-india-green border-2 border-white"></span>
+            </span>
+        </button>
+    </div>
+
+    <!-- Onboarding Modal Overlay -->
+    <div id="onboarding-overlay" class="fixed inset-0 z-[200] bg-black/80 backdrop-blur-md flex items-center justify-center transition-opacity duration-500 opacity-0 pointer-events-none" role="dialog" aria-modal="true" aria-label="Welcome Tour">
+        <div id="onboarding-card" class="glass-card rounded-3xl max-w-md w-full p-8 mx-4 relative transform scale-95 transition-transform duration-500 border-2 border-india-saffron/30"></div>
+    </div>
+
+    <!-- Schedule Results Modal -->
+    <div id="results-modal" class="fixed inset-0 z-[110] flex items-center justify-center hidden opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-label="Schedule Results">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-backdrop"></div>
+        <div id="results-modal-content" class="glass-card rounded-3xl p-8 max-w-lg w-full mx-4 relative z-10 transform scale-95 transition-transform duration-300 border-t-4 border-india-green">
+            <button id="close-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 bg-white/5 rounded-full" aria-label="Close Results Modal"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            <h3 class="text-2xl font-bold mb-2 text-white flex items-center gap-2"><span class="text-3xl" aria-hidden="true">🎉</span> Badhai Ho! Optimized!</h3>
+            <p class="text-sm text-slate-400 mb-6">Best-Fit Decreasing Algorithm applied successfully.</p>
+            <div class="space-y-6">
+                <div><h4 class="text-sm font-semibold text-india-green uppercase tracking-wider mb-3">Successfully Scheduled</h4><ul id="scheduled-items" class="space-y-2" role="list"></ul></div>
+                <div class="h-px w-full bg-white/10"></div>
+                <div><h4 class="text-sm font-semibold text-red-400 uppercase tracking-wider mb-3">Unscheduled (Not enough off-peak)</h4><ul id="unscheduled-items" class="space-y-2" role="list"></ul></div>
+                <div class="h-px w-full bg-white/10"></div>
+                <div class="flex items-center gap-3 bg-india-blue/10 border border-india-blue/20 p-3 rounded-xl">
+                    <span class="text-lg" aria-hidden="true">📊</span>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider">Slot Utilization</p>
+                        <p class="text-lg font-bold text-white" id="utilization-display">0%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
