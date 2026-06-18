@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from typing import List
 import time
 
-from backend.engine import init_db, append_event, calculate_current_budget, greedy_scheduler, get_all_events, get_event_stats
+from backend.engine import init_db, append_event, calculate_current_budget, greedy_scheduler, get_all_events, get_event_stats, clear_db
 from backend.middleware import sanitize_inputs, rate_limiter
 
 app = FastAPI(
@@ -148,6 +148,17 @@ async def get_stats():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/reset")
+async def reset_db():
+    """
+    Endpoint to reset the database (clear all events).
+    """
+    try:
+        clear_db()
+        return {"status": "success", "message": "Database reset to 0."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # --- Scheduler Endpoint ---
 @app.post("/api/schedule", status_code=200)
@@ -162,3 +173,9 @@ async def get_schedule(req: ScheduleRequestModel):
         return {"status": "success", "schedule": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+from fastapi.staticfiles import StaticFiles
+import os
+
+frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")

@@ -35,6 +35,14 @@ def append_event(action_type: str, carbon_impact: float) -> int:
     conn.close()
     return event_id
 
+def clear_db():
+    """Clears all events from the database."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM events")
+    conn.commit()
+    conn.close()
+
 def calculate_current_budget() -> float:
     """
     Event Sourcing Math: Reduces/sums the immutable event logs

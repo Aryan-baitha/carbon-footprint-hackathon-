@@ -4,7 +4,7 @@
 // Author: Aryan Baitha (AEC, Batch 2024-2028)
 // =====================================================================
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = '/api';
 
 // --- Utility Functions ---
 function debounce(func, wait) {
@@ -980,7 +980,14 @@ suggestionChips.forEach(chip => {
 // INITIALIZATION
 // =====================================================================
 
-initOnboarding();
-fetchBudget();
-fetchEventHistory();
-fetchAndRenderCharts();
+(async function init() {
+    try {
+        await fetch(`${API_BASE_URL}/reset`, { method: 'POST' });
+    } catch (e) {
+        console.error('Failed to reset db on load', e);
+    }
+    initOnboarding();
+    fetchBudget();
+    fetchEventHistory();
+    fetchAndRenderCharts();
+})();

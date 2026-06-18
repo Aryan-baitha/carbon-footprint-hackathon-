@@ -121,6 +121,7 @@ eco-ledger/
 | `GET` | `/api/budget` | Get the current net carbon budget (reduced from events) |
 | `GET` | `/api/stats` | Get aggregated statistics for chart visualization |
 | `POST` | `/api/schedule` | Run the Best-Fit Decreasing scheduler on a task queue |
+| `POST` | `/api/reset` | Reset the database (clear all events) on page refresh |
 
 ### Example: Add an Event
 ```bash
