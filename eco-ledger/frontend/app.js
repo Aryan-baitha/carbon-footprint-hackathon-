@@ -780,7 +780,7 @@ async function fetchEventHistory() {
         if (events.length === 0) {
             historyTableBody.innerHTML = `
                 <tr>
-                    <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                    <td colspan="6" class="px-6 py-12 text-center text-slate-500">
                         <div class="flex flex-col items-center gap-2">
                             <span class="text-4xl">📭</span>
                             <p>Abhi tak koi event record nahi hua.</p>
@@ -812,13 +812,16 @@ async function fetchEventHistory() {
                     </td>
                     <td class="px-6 py-4 text-india-saffron font-medium">${event.running_total.toFixed(1)}</td>
                     <td class="px-6 py-4 text-slate-400 text-xs">${formattedDate}</td>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick="deleteEvent(${event.id})" class="text-red-400 hover:text-red-300 transition-colors" title="Delete Event">🗑️</button>
+                    </td>
                 </tr>`;
         }).join('');
     } catch (error) {
         console.error('History fetch error:', error);
         historyTableBody.innerHTML = `
             <tr>
-                <td colspan="5" class="px-6 py-8 text-center text-red-400 text-sm">
+                <td colspan="6" class="px-6 py-8 text-center text-red-400 text-sm">
                     ⚠️ Server se data load nahi ho paya. Backend chalu hai?
                 </td>
             </tr>`;
@@ -830,6 +833,22 @@ refreshHistoryBtn.addEventListener('click', debounce(() => {
     fetchAndRenderCharts();
 }, 300));
 
+window.deleteEvent = async function(id) {
+    if (!confirm('Kiya aap is event ko delete karna chahte hain?')) return;
+    try {
+        const response = await fetch(`${API_BASE_URL}/events/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+            showFeedback('Event delete ho gaya', 'success');
+            fetchEventHistory();
+            fetchBudget();
+            fetchAndRenderCharts();
+        } else {
+            showFeedback('Delete failed', 'error');
+        }
+    } catch (e) {
+        showFeedback('Server error on delete', 'error');
+    }
+};
 
 // =====================================================================
 // EXPANDED AI HELPER (Eco Sahayak) — Keyword-Based Intent Engine

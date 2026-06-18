@@ -43,6 +43,14 @@ def clear_db():
     conn.commit()
     conn.close()
 
+def delete_event(event_id: int):
+    """Deletes an event from the ledger (breaks immutability for user convenience)."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM events WHERE id = ?", (event_id,))
+    conn.commit()
+    conn.close()
+
 def calculate_current_budget() -> float:
     """
     Event Sourcing Math: Reduces/sums the immutable event logs

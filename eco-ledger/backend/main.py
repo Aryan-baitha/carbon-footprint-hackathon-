@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from typing import List
 import time
 
-from backend.engine import init_db, append_event, calculate_current_budget, greedy_scheduler, get_all_events, get_event_stats, clear_db
+from backend.engine import init_db, append_event, calculate_current_budget, greedy_scheduler, get_all_events, get_event_stats, clear_db, delete_event
 from backend.middleware import sanitize_inputs, rate_limiter
 
 app = FastAPI(
@@ -133,6 +133,17 @@ async def get_budget():
     try:
         total = calculate_current_budget()
         return {"status": "success", "total_carbon_budget": total}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/events/{event_id}")
+async def remove_event(event_id: int):
+    """
+    Deletes a specific event from the ledger.
+    """
+    try:
+        delete_event(event_id)
+        return {"status": "success", "message": f"Event {event_id} deleted successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
