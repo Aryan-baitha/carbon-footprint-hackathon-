@@ -66,7 +66,7 @@ The task scheduler optimizes heavy appliance usage during off-peak grid hours:
 
 ### 4. 📊 Data Visualization (Chart.js)
 - **Doughnut Chart** — Emissions vs. Reductions breakdown
-- **Line Chart** — Cumulative carbon footprint over time with daily emissions/reductions overlay
+- **Line Chart** — 30-day Cumulative carbon footprint over time with daily emissions/reductions overlay
 - **Animated stat counters** — Total emitted, total reduced, event count
 
 ### 5. ♿ WCAG Accessibility Compliance
@@ -85,6 +85,7 @@ The task scheduler optimizes heavy appliance usage during off-peak grid hours:
 
 ### 7. 🎓 Interactive Onboarding Tour
 - 9-step guided walkthrough with element highlighting
+- Automatically triggers for first-time visitors or upon feature updates
 - Personalized greeting with name persistence (localStorage)
 - Auto-opens AI assistant after completion
 
