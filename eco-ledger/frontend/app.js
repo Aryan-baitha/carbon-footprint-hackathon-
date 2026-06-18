@@ -980,14 +980,7 @@ suggestionChips.forEach(chip => {
 // INITIALIZATION
 // =====================================================================
 
-(async function init() {
-    try {
-        await fetch(`${API_BASE_URL}/reset`, { method: 'POST' });
-    } catch (e) {
-        console.error('Failed to reset db on load', e);
-    }
-    initOnboarding();
-    fetchBudget();
-    fetchEventHistory();
-    fetchAndRenderCharts();
-})();
+initOnboarding();
+fetchBudget();
+fetchEventHistory();
+fetchAndRenderCharts();
