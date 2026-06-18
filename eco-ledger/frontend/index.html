@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Ledger: Carbon Budgeter</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',
+                            light: '#f8fafc',
+                            accent: '#16a34a',
+                            danger: '#dc2626'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* High contrast utilities and basic animations */
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-hover {
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .btn-hover:hover {
+            transform: scale(1.02);
+            filter: brightness(1.2);
+        }
+        /* Custom scrollbar for better UI */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4">
+
+    <!-- Header Section (Semantic HTML5) -->
+    <header class="w-full max-w-4xl mb-8 text-center" aria-label="Main Application Header">
+        <h1 class="text-4xl md:text-5xl font-bold text-brand-accent mb-2">Eco-Ledger</h1>
+        <p class="text-xl text-gray-300">Event-Sourced Carbon Budgeter</p>
+    </header>
+
+    <!-- Main Dashboard Area -->
+    <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8" aria-label="Dashboard Content">
+        
+        <!-- Section: Carbon Budget Overview -->
+        <section class="glass-panel p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center" aria-labelledby="budget-title">
+            <h2 id="budget-title" class="text-2xl font-semibold mb-4 text-gray-100">Total Carbon Budget</h2>
+            <div class="text-5xl font-bold text-white mb-2" id="carbon-budget-display" aria-live="polite">
+                0.0
+            </div>
+            <p class="text-gray-400">kg CO2e</p>
+            <button id="refresh-budget-btn" class="mt-6 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg btn-hover focus:outline-none focus:ring-2 focus:ring-brand-accent" aria-label="Refresh Carbon Budget">
+                Refresh Budget
+            </button>
+        </section>
+
+        <!-- Section: Add Carbon Event -->
+        <section class="glass-panel p-6 rounded-2xl shadow-xl" aria-labelledby="add-event-title">
+            <h2 id="add-event-title" class="text-2xl font-semibold mb-6 text-gray-100">Log Activity</h2>
+            
+            <form id="event-form" class="flex flex-col gap-4" aria-label="Log Carbon Event Form">
+                <div>
+                    <label for="action_type" class="block text-sm font-medium text-gray-300 mb-1">Action Type</label>
+                    <input type="text" id="action_type" name="action_type" required 
+                           class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-accent" 
+                           placeholder="e.g., Drove to work"
+                           aria-label="Action Type Input" aria-required="true">
+                </div>
+                
+                <div>
+                    <label for="carbon_impact" class="block text-sm font-medium text-gray-300 mb-1">Carbon Impact (kg CO2e)</label>
+                    <input type="number" step="0.1" id="carbon_impact" name="carbon_impact" required 
+                           class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-accent" 
+                           placeholder="e.g., 5.5 (Use negative for reductions)"
+                           aria-label="Carbon Impact Numeric Input" aria-required="true">
+                </div>
+                
+                <button type="submit" id="submit-event-btn" 
+                        class="mt-2 w-full bg-brand-accent hover:bg-green-500 text-white font-bold py-3 rounded-lg btn-hover shadow-lg focus:outline-none focus:ring-2 focus:ring-white"
+                        aria-label="Submit Carbon Event">
+                    Log Event
+                </button>
+                <div id="event-feedback" class="text-sm mt-2 text-center hidden" aria-live="polite"></div>
+            </form>
+        </section>
+
+        <!-- Section: Algorithmic Task Scheduler -->
+        <section class="glass-panel p-6 rounded-2xl shadow-xl md:col-span-2" aria-labelledby="scheduler-title">
+            <h2 id="scheduler-title" class="text-2xl font-semibold mb-4 text-gray-100">Smart Task Scheduler (Greedy Algorithm)</h2>
+            <p class="text-gray-400 mb-6">Enter heavy tasks to find optimal off-peak grid hours.</p>
+            
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <input type="text" id="task-name" placeholder="Task Name (e.g. Washing Machine)" 
+                       class="flex-1 bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                       aria-label="Task Name">
+                <input type="number" step="0.5" id="task-duration" placeholder="Duration (hrs)" 
+                       class="w-full md:w-32 bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                       aria-label="Task Duration in hours">
+                <button id="add-task-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-lg btn-hover focus:outline-none focus:ring-2 focus:ring-white" aria-label="Add Task to List">
+                    Add Task
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <h3 class="text-lg font-medium text-gray-300 mb-2">Tasks to Schedule:</h3>
+                <ul id="task-list" class="list-disc list-inside text-gray-400" aria-live="polite">
+                    <!-- Tasks injected here -->
+                </ul>
+            </div>
+            
+            <button id="run-scheduler-btn" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg btn-hover focus:outline-none focus:ring-2 focus:ring-white" aria-label="Run Scheduler Algorithm">
+                Find Optimal Schedule
+            </button>
+            
+            <div id="schedule-results" class="mt-6 hidden bg-slate-800 p-4 rounded-lg border border-slate-600" aria-live="polite">
+                <h3 class="text-lg font-medium text-brand-accent mb-2">Scheduler Results</h3>
+                <div id="scheduled-items" class="text-gray-300 mb-2"></div>
+                <div id="unscheduled-items" class="text-brand-danger"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-gray-500 text-sm" aria-label="Application Footer">
+        &copy; 2026 Eco-Ledger. Built with Event-Sourcing & Accessibility.
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
