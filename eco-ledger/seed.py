@@ -34,21 +34,40 @@ actions = [
 ]
 
 base_date = datetime.now() - timedelta(days=29)
+events_to_insert = []
 
-# Insert exactly 30 user inputs, one for each day of the last 30 days
+# Generate random events over the last 30 days
 for i in range(30):
-    action, impact = random.choice(actions)
-    unique_action = f"{action}_{i+1}"
-    
-    event_date = base_date + timedelta(days=i)
-    timestamp_str = event_date.strftime('%Y-%m-%d %H:%M:%S')
-    
+    current_date = base_date + timedelta(days=i)
+    # 1 to 4 events per day
+    num_events = random.randint(1, 4)
+    for _ in range(num_events):
+        action, impact = random.choice(actions)
+        
+        # Random time of day
+        hour = random.randint(6, 22) # 6 AM to 10 PM
+        minute = random.randint(0, 59)
+        second = random.randint(0, 59)
+        
+        event_time = current_date.replace(hour=hour, minute=minute, second=second)
+        events_to_insert.append({
+            "action": f"{action}",
+            "impact": impact,
+            "timestamp": event_time
+        })
+
+# Sort chronologically (important for event sourcing)
+events_to_insert.sort(key=lambda x: x["timestamp"])
+
+# Insert into database
+for event in events_to_insert:
+    timestamp_str = event["timestamp"].strftime('%Y-%m-%d %H:%M:%S')
     cursor.execute(
         "INSERT INTO events (action_type, carbon_impact, timestamp) VALUES (?, ?, ?)",
-        (unique_action, impact, timestamp_str)
+        (event["action"], event["impact"], timestamp_str)
     )
 
 conn.commit()
 conn.close()
 
-print("Successfully inserted 30 sample user inputs spread over the last 30 days!")
+print(f"Successfully inserted {len(events_to_insert)} sample user inputs with random timestamps over the last 30 days!")
